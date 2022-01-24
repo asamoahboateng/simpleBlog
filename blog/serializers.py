@@ -1,8 +1,7 @@
 from cgitb import lookup
 from pyexpat import model
 from rest_framework import serializers
-
-from .models import Post, Comment
+from .models import Post, Comment, Likes, User
 
 post_detail_url = serializers.HyperlinkedIdentityField(
     view_name = 'detail',
@@ -11,14 +10,8 @@ post_detail_url = serializers.HyperlinkedIdentityField(
 
 class CommentSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name = 'comment_detail', 
-        # lookup_field = 'id'
+        view_name = 'comment_detail',
     )
-    # post = serializers.HyperlinkedRelatedField(
-    #     many=True,
-    #     read_only=True,
-    #     view_name='detail'
-    # )
     class Meta:
         model = Comment
         fields = [
@@ -28,7 +21,19 @@ class CommentSerializer(serializers.ModelSerializer):
             'post',
             # 'post'
         ]
+
+class LikesSeralizer(serializers.ModelSerializer):
+    class Meta:
+        model = Likes
+        fields = ['likes','user','post']
+        extra_kwargs = ('likes')
+
+class UserSeralizer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'user']
         
+            
 class PostListSerializer(serializers.ModelSerializer):
     url = post_detail_url
     class Meta:
@@ -50,12 +55,8 @@ class PostListSerializer(serializers.ModelSerializer):
 
 class PostDetailSeralizer(serializers.ModelSerializer):
     url = post_detail_url
-    # comments = serializers.PrimaryKeyRelatedField(
-    #     many =True,
-    #     read_only = True
-    # )
     comments = CommentSerializer(many=True, read_only=True)
-    # comments = serializers.StringRelatedField(many=True)
+    likes = LikesSeralizer(many=True, read_only=True)
     class Meta:
         model = Post
         fields = [
@@ -67,5 +68,7 @@ class PostDetailSeralizer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'comments',
+            'likes'
         ]
+
 

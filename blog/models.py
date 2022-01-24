@@ -5,7 +5,15 @@ from django.utils.text import slugify
 
 # Create your models here.
 # post model
-
+#user tables
+class User(models.Model):
+    name = models.CharField(max_length = 255)
+    email = models.CharField(max_length=255)
+    
+    def __str__(self):
+        return self.name
+    
+    
 class Post(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(blank=True, null=True)
@@ -41,3 +49,12 @@ class Comment(models.Model):
     
     def __str__(self):
         return self.body
+    
+#post likes
+class Likes(models.Model):
+    post = models.ForeignKey(Post, related_name='likes' ,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='user_likes' ,on_delete=models.CASCADE)
+    likes = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.likes

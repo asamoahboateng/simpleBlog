@@ -1,7 +1,7 @@
-# from itsdangerous import serializer
+from django.http import QueryDict
 from rest_framework import generics
-from .serializers import CommentSerializer, PostDetailSeralizer, PostListSerializer
-from .models import Post, Comment
+from .serializers import CommentSerializer, LikesSeralizer, PostDetailSeralizer, PostListSerializer, UserSeralizer
+from .models import Likes, Post, Comment, User
 
 
 # class PostViewSet(viewsets.ModelViewSet):
@@ -25,3 +25,11 @@ class CommentList(generics.ListCreateAPIView):
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    
+class LikesList(generics.ListCreateAPIView):
+    queryset = Likes.objects.all()
+    serializer_class = LikesSeralizer
+    
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_clas = UserSeralizer
